@@ -21,5 +21,4 @@ public class StatusData {
     @ManyToOne
     @JoinColumn(name = "status_id")
     private Status status;
-
 }
