@@ -18,3 +18,8 @@ buildNumber.properties
 
 data/demo.trace.db
 data/demo.mv.db
+
+# FRONT
+.idea/
+.node_modules/
+package-lock.json

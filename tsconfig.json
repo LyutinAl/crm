@@ -1,0 +1,32 @@
+{
+  "compilerOptions": {
+    "outDir": "./dist/",
+    "sourceMap": true,
+    "noImplicitAny": true,
+    "module": "commonjs",
+    "target": "es6",
+    "allowJs": true,
+    "baseUrl": ".",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "paths": {
+      // Нужно указывать одинаковые и в tsconfig, и в webpack.config
+      "@src/*": ["src_front/*"],
+      "@store/*": ["src_front/ts/stateStorage/*"],
+      "@modals/*": ["src_front/ts/modals/*"],
+      "@comp/*": ["src_front/ts/components/*"],
+      "@pages/*": ["src_front/ts/pages/*"],
+      "@types": ["src_front/ts/types/types"]
+    },
+    "jsx": "react",
+    "lib": [
+      "dom",
+      "es5",
+      "es6",
+      "es2015.promise"
+    ]
+  },
+  "include": [
+    "./src_front/**/*"
+  ]
+}
