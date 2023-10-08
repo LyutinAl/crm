@@ -3,6 +3,7 @@ package ru.naumen.crm.service;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.naumen.crm.entity.Customer;
+import ru.naumen.crm.exception.CustomerNotFoundException;
 import ru.naumen.crm.repository.CustomerRepository;
 
 import java.util.List;
@@ -15,7 +16,7 @@ public class CustomerServiceImpl implements CustomerService{
 
     @Override
     public Customer getCustomerById(int id) {
-        return customerRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Customer with id: " + id + "not exist"));
+        return customerRepository.findById(id).orElseThrow(() -> new CustomerNotFoundException(id));
     }
 
     @Override
@@ -25,7 +26,11 @@ public class CustomerServiceImpl implements CustomerService{
 
     @Override
     public Customer saveCustomer(Customer customer) {
-        return customerRepository.save(customer);
+        if (customerRepository.existsById(customer.getId())) {
+            return customerRepository.save(customer);
+        } else {
+            throw new CustomerNotFoundException(customer.getId());
+        }
     }
 
     @Override
@@ -33,7 +38,7 @@ public class CustomerServiceImpl implements CustomerService{
         if (customerRepository.existsById(customer.getId())) {
             return customerRepository.save(customer);
         } else {
-            throw new IllegalArgumentException("Customer with id: " + customer.getId() + "not exist");
+            throw new CustomerNotFoundException(customer.getId());
         }
     }
 
@@ -42,7 +47,7 @@ public class CustomerServiceImpl implements CustomerService{
         if (customerRepository.existsById(id)) {
             customerRepository.deleteById(id);
         } else {
-            throw new IllegalArgumentException("Customer with id: " + id + "not exist");
+            throw new CustomerNotFoundException(id);
         }
     }
 }
