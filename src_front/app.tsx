@@ -1,6 +1,6 @@
 import React from 'react';
 import {createRoot} from 'react-dom/client';
-import {BrowserRouter, Route, Routes, Navigate, useNavigate} from 'react-router-dom';
+import {BrowserRouter, Route, Routes, useNavigate} from 'react-router-dom';
 import {
   AppBar,
   Toolbar,
@@ -40,6 +40,7 @@ const App: React.FC = () => {
         </Toolbar>
       </AppBar>
 
+
       <Drawer
         variant="permanent"
         sx={{
@@ -62,11 +63,15 @@ const App: React.FC = () => {
           ))}
         </List>
       </Drawer>
-      <Toolbar/>
-      <Routes>
-        <Route path={'/clients'} element={<Clients/>}/>
-        <Route path={'/'} element={<Index/>}/>
-      </Routes>
+
+      <main style={{marginLeft: drawerWidth}}>
+        <Toolbar/>
+        <Routes>
+          <Route path={'/clients'} element={<Clients/>}/>
+          <Route path={'/'} element={<Index/>}/>
+        </Routes>
+      </main>
+
     </Box>
   );
 };
@@ -74,7 +79,7 @@ const App: React.FC = () => {
 const rootElement = document.getElementById('root');
 const root = createRoot(rootElement);
 root.render(
-    <BrowserRouter>
-      <App/>
-    </BrowserRouter>,
+  <BrowserRouter>
+    <App/>
+  </BrowserRouter>,
 );
