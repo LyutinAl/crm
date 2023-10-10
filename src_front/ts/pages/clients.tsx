@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow} from '@mui/material';
 import axios from 'axios';
 import {iCustomer} from '@types';
+import CustomerModal from '@modals/customer';
 
 interface Column {
   id: 'name' | 'phone' | 'email';
@@ -17,9 +18,12 @@ const columns: readonly Column[] = [
 ];
 
 const Clients = (): React.JSX.Element => {
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [page, setPage] = React.useState<number>(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState<number>(10);
+  const [openModal, setOpenModal] = useState<boolean>(false);
   const [customers, setCustomers] = useState<iCustomer[]>([]);
+  const [customerInd, setCustomerInd] = useState<number | null>(null);
+
 
   useEffect(() => {
     axios.get('http://localhost:8080/admin/getCustomers')
@@ -27,10 +31,30 @@ const Clients = (): React.JSX.Element => {
         .catch((e) => console.log(e));
   }, []);
 
+  // Обновление страницы
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
   };
 
+  // Обновление ID для отображения внутри модального окна
+  const handleCustomerInd = (ind: number): void => {
+    setCustomerInd(ind);
+  };
+
+  // Обновление состояния модального окна
+  const handleModal = () => {
+    setOpenModal(openModal == false);
+  };
+
+  // Обновление массива клиентов
+  const handleCustomers = (updatedProps: Partial<iCustomer>) => {
+    const customerNew = {...customers.find((x) => x.id == customerInd), ...updatedProps};
+    const customersNew = [...customers];
+    customersNew[customerInd] = {...customerNew};
+    setCustomers(customersNew);
+  };
+
+  // Обновление строк на странице
   const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
     setRowsPerPage(+event.target.value);
     setPage(0);
@@ -62,7 +86,16 @@ const Clients = (): React.JSX.Element => {
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row) => {
                     return (
-                      <TableRow hover role="checkbox" tabIndex={-1} key={'rowTab' + row.id}>
+                      <TableRow
+                        hover
+                        role="checkbox"
+                        tabIndex={-1}
+                        key={'rowTab' + row.id}
+                        onClick={() => {
+                          handleCustomerInd(customers.findIndex((x) => x.id === row.id));
+                          handleModal();
+                        }}
+                      >
                         {columns.map((column) => {
                           return (
                             <TableCell key={column.id} align={column.align}>
@@ -85,6 +118,13 @@ const Clients = (): React.JSX.Element => {
         page={page}
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
+      />
+      <CustomerModal
+        openModal={openModal}
+        setOpenModal={handleModal}
+        customers={customers}
+        setCustomers={handleCustomers}
+        customerInd={customerInd}
       />
     </Paper>
   );
